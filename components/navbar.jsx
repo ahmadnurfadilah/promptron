@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Logo from "./logo";
+import Logo from "./logo/logo";
 import { Button, buttonVariants } from "./ui/button";
 import { User, Wallet } from "lucide-react";
 import toast from "react-hot-toast";
