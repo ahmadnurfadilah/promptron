@@ -3,24 +3,42 @@
 import Link from "next/link";
 import Logo from "./logo";
 import { Button, buttonVariants } from "./ui/button";
-import { Wallet } from "lucide-react";
+import { User, Wallet } from "lucide-react";
 import toast from "react-hot-toast";
+import { useUserStore } from "@/lib/store";
+import { useEffect } from "react";
+import { truncateAddress } from "@/lib/utils";
 
 export default function Navbar() {
-  const getTronweb = () => {
-    console.log("HI");
-    const obj = setInterval(async () => {
-      clearInterval(obj);
-      if (window.tronWeb) {
-        if (window.tronWeb.defaultAddress.base58) {
-          toast.success("Yes, catch it:" + window.tronWeb.defaultAddress.base58);
-        } else {
-          toast.error("Wallet not connected!");
+  const setUser = useUserStore((state) => state.setUser);
+  const user = useUserStore((state) => state.user);
+
+  useEffect(() => {
+    console.log("user", user);
+  }, [user]);
+
+  const getTronweb = async () => {
+    if (typeof window.tronWeb !== "undefined" && typeof window.tronLink !== "undefined") {
+      if (window.tronWeb.ready || window.tronLink.ready) {
+        try {
+          const connect = await window.tronLink.request({ method: "tron_requestAccounts" });
+          if (connect === 200) {
+            setUser({ address: window.tronWeb.defaultAddress.base58});
+          } else {
+            console.log("Connect", connect);
+            setUser({ address: window.tronWeb.defaultAddress.base58});
+          }
+        } catch (e) {
+          console.log("Error", e);
+          toast.error("Failed to connect your wallet!");
         }
       } else {
-        toast.error("TronLink not detected!");
+        toast.error("TronLink not yet ready!");
       }
-    }, 10);
+    } else {
+      toast.error("TronLink not detected!");
+      toast.error("Make sure you have installed TronLink in your browser");
+    }
   };
 
   return (
@@ -42,10 +60,17 @@ export default function Navbar() {
                 Sell Prompt
               </Link>
             </div>
-            <Button href="/prompt" className={`${buttonVariants({ variant: "primary" })} gap-2`} onClick={() => getTronweb()}>
-              <Wallet className="w-4 h-4" />
-              Connect Wallet
-            </Button>
+            {user?.address ? (
+              <Button className={`${buttonVariants({ variant: "primary" })} gap-2`}>
+                <User className="w-4 h-4" />
+                {user?.address && truncateAddress(user.address)}
+              </Button>
+            ) : (
+              <Button className={`${buttonVariants({ variant: "primary" })} gap-2`} onClick={() => getTronweb()}>
+                <Wallet className="w-4 h-4" />
+                Connect Wallet
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import { Toaster } from "react-hot-toast";
 import "./globals.css";
 import Navbar from "@/components/navbar";
+import Loading from "@/components/ui/loading";
 
 export const metadata = {
   title: "Promptron",
@@ -15,6 +16,7 @@ export default function RootLayout({ children }) {
         <main>
           {children}
         </main>
+        <Loading />
         <Toaster />
       </body>
     </html>
