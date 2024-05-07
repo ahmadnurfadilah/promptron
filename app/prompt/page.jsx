@@ -34,7 +34,7 @@ export default function Page() {
     for (let i = 0; i < promptId; i++) {
       const prompt = await contract.prompts(i).call();
       if (prompt.title != "") {
-        allPrompts.push({ id: i, title: prompt.title, description: prompt.description, category: prompt.category, price: window.tronWeb.fromSun(prompt.price) });
+        allPrompts.push({ id: i, title: prompt.title, description: prompt.description, category: prompt.category, used: window.tronWeb.toSun(prompt.used), price: window.tronWeb.fromSun(prompt.price) });
       }
     }
     setPrompts(allPrompts);
@@ -88,11 +88,16 @@ export default function Page() {
                   <h4 className="font-bold mb-1 line-clamp-1">{i.title}</h4>
                   <p className="text-xs line-clamp-2 text-white/70">{i.description}</p>
                   <hr className="my-4 border-white/10" />
-                  <div className="flex items-center gap-2">
-                    <div className="size-5 flex items-center justify-center bg-red-500 rounded-full group-hover:bg-white">
-                      <LogoTron className="w-4 h-4 group-hover:text-red-500" />
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <div className="size-5 flex items-center justify-center bg-red-500 rounded-full group-hover:bg-white">
+                        <LogoTron className="w-4 h-4 group-hover:text-red-500" />
+                      </div>
+                      <p className="text-sm font-bold">{i.price}</p>
                     </div>
-                    <p className="text-sm font-bold">{i.price}</p>
+                    <div>
+                      <span className="text-[10px] bg-white/10 px-2 py-1 rounded-full font-bold">Used {i.used/1000000}x</span>
+                    </div>
                   </div>
                 </div>
               </Link>
