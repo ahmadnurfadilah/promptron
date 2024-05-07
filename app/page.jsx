@@ -6,7 +6,14 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      <div className="w-full bg-gradient-to-t from-dark to-white/5 relative pt-32">
+      <div
+        className="w-full bg-gradient-to-t from-dark to-white/5 relative pt-32"
+        style={{
+          backgroundColor: `#111111`,
+          backgroundImage: `repeating-radial-gradient( circle at 0 0, transparent 0, #111111 18px ), repeating-linear-gradient( #0f172a55, #0f172a )`,
+        }}
+      >
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-950"></div>
         <div className="z-10 container px-4 h-full relative">
           <div className="h-full grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
             <div>
@@ -48,9 +55,7 @@ export default function Home() {
               <SearchCheckIcon />
             </div>
             <h3 className="font-extrabold text-xl mb-2 text-primary">Explore Prompts</h3>
-            <p className="opacity-80">
-              You can explore prompts and choose to either try one (ownership remains with the creator) or purchase one.
-            </p>
+            <p className="opacity-80">You can explore prompts and choose to either try one (ownership remains with the creator) or purchase one.</p>
           </div>
           <div className="p-8 border rounded-md bg-white/5 border-white/10 cursor-crosshair hover:shadow-lg hover:-translate-y-px hover:border-primary transition-all group">
             <div className="w-12 h-12 rounded-md bg-lime border border-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-all text-primary group-hover:text-primary group-hover:scale-105 group-hover:-rotate-12 group-hover:shadow-xl delay-75 duration-200">

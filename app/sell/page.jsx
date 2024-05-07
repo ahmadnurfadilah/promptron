@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import toast from "react-hot-toast";
 import { ErrorMessage, Field, Formik } from "formik";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ChevronLeft, ChevronRight, Rocket } from "lucide-react";s
+import { CheckCircle2, ChevronLeft, ChevronRight, Rocket } from "lucide-react";
 import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { crypt } from "@/lib/utils";
@@ -35,7 +35,7 @@ export default function Page() {
       const contract = await window.tronWeb.contract().at(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS);
       try {
         const result = await contract.addPrompt(values.title, values.description, category, values.preview_output, prompData, parseInt(tronWeb.toSun(values.price_to_use))).send({
-          feeLimit:1_000_000_000,
+          // feeLimit:500_000_000,
           callValue:0,
           shouldPollResponse:true
         });

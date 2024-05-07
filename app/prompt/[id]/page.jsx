@@ -80,7 +80,7 @@ export default function Page() {
                           <DialogHeader>
                             <DialogTitle className="text-lg font-bold">Try Prompt: {prompt?.title}</DialogTitle>
                             <div>
-                              <PromptCompletion tokenId={id} prompt={prompt} />
+                              <PromptCompletion contract={contract} tokenId={id} prompt={prompt} />
                             </div>
                           </DialogHeader>
                         </DialogContent>

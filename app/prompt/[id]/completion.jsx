@@ -4,15 +4,16 @@ import toast from "react-hot-toast";
 import LogoTron from "@/components/logo/logo-tron";
 import { useCompletion } from "ai/react";
 import { useCallback, useEffect, useState } from "react";
-import { useLoadingStore } from "@/lib/store";
+import { useLoadingStore, useUserStore } from "@/lib/store";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { decrypt } from "@/lib/utils";
 
-export default function PromptCompletion({ tokenId, prompt }) {
+export default function PromptCompletion({ contract, tokenId, prompt }) {
+  const user = useUserStore((state) => state.user);
   const setLoading = useLoadingStore((state) => state.setMsg);
   const [inputs, setInputs] = useState([]);
-  const [balance, setBalance] = useState(1000);
+  const [balance, setBalance] = useState(0);
   const [inputValues, setInputValues] = useState({});
   const { completion, complete } = useCompletion({
     body: {
@@ -32,6 +33,12 @@ export default function PromptCompletion({ tokenId, prompt }) {
     }
   }, [prompt]);
 
+  useEffect(() => {
+    if (user) {
+      setBalance(window.tronWeb.fromSun(user.balance));
+    }
+  }, [user]);
+
   const handleInputFieldChange = (e) => {
     const { name, value } = e.target;
 
@@ -49,19 +56,30 @@ export default function PromptCompletion({ tokenId, prompt }) {
         setLoading("Loading...");
         try {
           setBalance((prev) => prev - cost);
-          await complete(prompt?.data);
+          const result = await contract.tryPrompt(tokenId, Date.now()).send({
+            // feeLimit:500_000_000,
+            callValue: tronWeb.toSun(prompt.price),
+            shouldPollResponse: true,
+          });
+
           setLoading(false);
+
+          if (result) {
+            await complete(prompt?.data);
+          } else {
+            toast.error("Failed");
+          }
         } catch (error) {
-          console.log(error);
-          toast.error("Failed to handle your request");
           setLoading(false);
+          toast.error("Failed");
+          console.log("Error", error);
         }
       } else {
         toast.dismiss();
         toast.error("Your balance is insufficient to make this transaction");
       }
     },
-    [complete, balance, prompt, setLoading, tokenId]
+    [complete, balance, prompt, setLoading]
   );
 
   return (

@@ -8,13 +8,16 @@ import toast from "react-hot-toast";
 import { useUserStore } from "@/lib/store";
 import { useEffect } from "react";
 import { truncateAddress } from "@/lib/utils";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuTrigger } from "./ui/dropdown-menu";
 
 export default function Navbar() {
   const setUser = useUserStore((state) => state.setUser);
   const user = useUserStore((state) => state.user);
 
   useEffect(() => {
-    console.log("user", user);
+    if (user) {
+      tronWeb.trx.getBalance(user.address).then((res) => setUser({...user, balance: res}));
+    }
   }, [user]);
 
   const getTronweb = async () => {
@@ -25,7 +28,6 @@ export default function Navbar() {
           if (connect === 200) {
             setUser({ address: window.tronWeb.defaultAddress.base58});
           } else {
-            console.log("Connect", connect);
             setUser({ address: window.tronWeb.defaultAddress.base58});
           }
         } catch (e) {
@@ -61,10 +63,17 @@ export default function Navbar() {
               </Link>
             </div>
             {user?.address ? (
-              <Button className={`${buttonVariants({ variant: "primary" })} gap-2`}>
-                <User className="w-4 h-4" />
-                {user?.address && truncateAddress(user.address)}
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button className={`${buttonVariants({ variant: "primary" })} gap-2`}>
+                    <User className="w-4 h-4" />
+                    {user?.address && truncateAddress(user.address)}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-48 right-0">
+                  <DropdownMenuLabel>{window.tronWeb.fromSun(user.balance)} TRX</DropdownMenuLabel>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
               <Button className={`${buttonVariants({ variant: "primary" })} gap-2`} onClick={() => getTronweb()}>
                 <Wallet className="w-4 h-4" />
