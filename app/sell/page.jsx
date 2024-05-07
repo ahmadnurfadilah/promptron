@@ -4,8 +4,7 @@ import * as Yup from "yup";
 import toast from "react-hot-toast";
 import { ErrorMessage, Field, Formik } from "formik";
 import { Button } from "@/components/ui/button";
-import { CheckCircle2, ChevronLeft, ChevronRight, Rocket } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { CheckCircle2, ChevronLeft, ChevronRight, Rocket } from "lucide-react";s
 import { useState } from "react";
 import { Label } from "@radix-ui/react-label";
 import { crypt } from "@/lib/utils";
@@ -14,7 +13,6 @@ import { useLoadingStore, useUserStore } from "@/lib/store";
 import LogoTron from "@/components/logo/logo-tron";
 
 export default function Page() {
-  const router = useRouter();
   const user = useUserStore((state) => state.user);
   const setLoading = useLoadingStore((state) => state.setMsg);
   const [step, setStep] = useState(0);
@@ -25,27 +23,35 @@ export default function Page() {
     if (step === 3) {
       setLoading("Processing...");
 
-      const metadata = {
-        title: values.title,
-        description: values.description,
-        category: category,
-        price: values.price_to_use,
-        prompt: {
-          data: crypt(
-            JSON.stringify({
-              model: values.model,
-              prompt: `${values.prompt}`,
-              temperature: values?.temperature || 1,
-              max_tokens: values?.max_tokens || 256,
-            })
-          ),
-          preview: `${values.preview_output}`,
-        },
-      };
+      const prompData = crypt(
+        JSON.stringify({
+          model: values.model,
+          prompt: `${values.prompt}`,
+          temperature: values?.temperature || 1,
+          max_tokens: values?.max_tokens || 256,
+        })
+      );
 
-      console.log(metadata);
+      const contract = await window.tronWeb.contract().at(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS);
+      try {
+        const result = await contract.addPrompt(values.title, values.description, category, values.preview_output, prompData, parseInt(tronWeb.toSun(values.price_to_use))).send({
+          feeLimit:1_000_000_000,
+          callValue:0,
+          shouldPollResponse:true
+        });
 
-      toast.success("Success");
+        setLoading(false);
+        toast.success("Success!");
+        console.log("contract result", result);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } catch (error) {
+        setLoading(false);
+        toast.error(error.toString());
+        console.log("Error", error);
+      }
     } else {
       setStep((prev) => prev + 1);
     }
