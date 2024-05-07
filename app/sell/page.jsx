@@ -35,7 +35,7 @@ export default function Page() {
       const contract = await window.tronWeb.contract().at(process.env.NEXT_PUBLIC_CONTRACT_ADDRESS);
       try {
         const result = await contract.addPrompt(values.title, values.description, category, values.preview_output, prompData, parseInt(tronWeb.toSun(values.price_to_use))).send({
-          // feeLimit:500_000_000,
+          feeLimit:1_000_000_000,
           callValue:0,
           shouldPollResponse:true
         });
