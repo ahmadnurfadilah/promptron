@@ -47,8 +47,11 @@ export default function Navbar() {
     <div className="fixed top-8 inset-x-0 z-20">
       <div className="w-full container px-4">
         <div className="w-full h-16 bg-white/10 rounded-xl backdrop-blur-xl border border-white/10 flex items-center justify-between px-4">
-          <Link href="/" className="flex items-center gap-2 text-primary font-bold">
+          <Link href="/" className="flex items-center gap-2 text-primary font-bold relative">
             <Logo />
+            {process.env.NEXT_PUBLIC_NETWORK === 'nile' && (
+              <span className="absolute -top-4 -right-0 text-[9px] font-bold bg-red-600 text-white rounded-md px-1 py-px">NILE TESTNET</span>
+            )}
           </Link>
           <div className="flex items-center gap-8 md:gap-12">
             <div className="flex items-center gap-8 md:gap-12 text-sm font-medium text-white/70">
