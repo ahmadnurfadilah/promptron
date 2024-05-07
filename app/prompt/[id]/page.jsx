@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { truncateAddress } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useUserStore } from "@/lib/store";
+import PromptCompletion from "./completion";
 
 export default function Page() {
   const { id } = useParams();
@@ -37,7 +38,7 @@ export default function Page() {
   const fetchPrompt = async (promptId) => {
     setFetching(true);
     const p = await contract.prompts(promptId).call();
-    setPrompt({ id: id, title: p.title, description: p.description, category: p.category, preview: p.preview, price: window.tronWeb.fromSun(p.price) });
+    setPrompt({ id: id, title: p.title, description: p.description, category: p.category, preview: p.preview, data: p.data, price: window.tronWeb.fromSun(p.price) });
     setFetching(false);
   };
 
@@ -58,7 +59,7 @@ export default function Page() {
             <div className="w-full bg-white/10 rounded-md">
               {prompt && (
                 <div className="p-1">
-                  <img src={`/api/og?id=${prompt.id}&category=${prompt.category}&size=square`} alt="" className="w-full" />
+                  <img src={`/api/og?id=${prompt?.id ?? "-"}&category=${prompt?.category ?? ""}&size=square`} alt="" className="w-full" />
                 </div>
               )}
               <div className="px-4 pb-4 pt-3 flex flex-col justify-between">
@@ -78,7 +79,9 @@ export default function Page() {
                         <DialogContent className="bg-zinc-800 border-dark">
                           <DialogHeader>
                             <DialogTitle className="text-lg font-bold">Try Prompt: {prompt?.title}</DialogTitle>
-                            <div>{/* Prompt Completion Here */}</div>
+                            <div>
+                              <PromptCompletion tokenId={id} prompt={prompt} />
+                            </div>
                           </DialogHeader>
                         </DialogContent>
                       </Dialog>
@@ -93,7 +96,7 @@ export default function Page() {
                         <span>Try Prompt</span>
                         <h6 className={`flex items-center gap-1`}>
                           <LogoTron className="w-4 h-4" />
-                          <span>10</span>
+                          <span>{prompt?.price}</span>
                         </h6>
                       </Button>
                     )}
