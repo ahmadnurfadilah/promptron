@@ -93,12 +93,12 @@ export default function Page() {
             <>
               <h1 className="font-bold text-2xl mb-4">Start selling your prompts</h1>
               <p className="mb-3 text-white/70">
-                Promptron is a cutting-edge marketplace fully powered by Flow blockchain technology, focusing on Midjourney, ChatGPT, DALL·E, and Stable
+                Promptron is a cutting-edge marketplace fully powered by TRON blockchain technology, focusing on Midjourney, ChatGPT, DALL·E, and Stable
                 Diffusion Prompts. Through Promptron, you have the opportunity to monetize your Prompt Engineering expertise by offering and selling your own
                 prompts.
               </p>
               <p className="text-white/70 mb-6">
-                With the security and efficiency guaranteed by Flow blockchain technology, this innovative platform enables you to kickstart your prompt-selling
+                With the security and efficiency guaranteed by TRON blockchain technology, this innovative platform enables you to kickstart your prompt-selling
                 journey in just 2 minutes. Harness the power of blockchain technology to unlock your potential on Promptron!
               </p>
 
